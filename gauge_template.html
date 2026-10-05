@@ -1,95 +1,164 @@
 <title>Bitcoin Cycle Score</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one narrow column. Gauge and verdict up top, indicator ledger below. */
+/* Layout: dark-first product surface. Glow-lit header, one hero card (gauge + verdict), signal list, footnotes. */
 :root {
-  --bg: #f5f6f8; --surface: #ffffff; --fg: #15181e; --muted: #5d6573; --line: #dde1e7;
-  --accent: #e8850c;
-  --z0: #c8372d; --z1: #e07a4f; --z2: #a3a9b4; --z3: #3f9d8a; --z4: #1f7a4d;
-  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
-  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0f1216; --surface: #171b21; --fg: #e9ecf1; --muted: #98a1ae; --line: #2a3039;
-  --accent: #f59a2a;
-  --z0: #e5574c; --z1: #ec9168; --z2: #6b7380; --z3: #4fb8a2; --z4: #3ea66f;
+  --bg: #08090a; --surface: #0f1011; --surface-2: #141516; --hover: rgba(255,255,255,.025);
+  --line: rgba(255,255,255,.08); --line-strong: rgba(255,255,255,.14); --highlight: rgba(255,255,255,.06);
+  --fg: #f7f8f8; --fg-2: #d0d6e0; --fg-3: #8a8f98; --fg-4: #62666d;
+  --accent: #7170ff; --glow: rgba(94,106,210,.22);
+  --z0: #eb5757; --z1: #f2994a; --z2: #8a8f98; --z3: #68cc9a; --z4: #4cb782;
+  --sans: "Inter", "SF Pro Display", -apple-system, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #fcfcfd; --surface: #ffffff; --surface-2: #f7f8f8; --hover: rgba(0,0,0,.02);
+  --line: rgba(0,0,0,.08); --line-strong: rgba(0,0,0,.14); --highlight: rgba(255,255,255,.8);
+  --fg: #1b1c1f; --fg-2: #3c3f45; --fg-3: #6b6f76; --fg-4: #94979d;
+  --accent: #5e6ad2; --glow: rgba(94,106,210,.12);
+  --z0: #d64545; --z1: #db7f2c; --z2: #94979d; --z3: #3fa877; --z4: #2b8a5c;
+  color-scheme: light;
 } }
-:root[data-theme="dark"] {
-  --bg: #0f1216; --surface: #171b21; --fg: #e9ecf1; --muted: #98a1ae; --line: #2a3039;
-  --accent: #f59a2a;
-  --z0: #e5574c; --z1: #ec9168; --z2: #6b7380; --z3: #4fb8a2; --z4: #3ea66f;
-  color-scheme: dark;
+:root[data-theme="light"] {
+  --bg: #fcfcfd; --surface: #ffffff; --surface-2: #f7f8f8; --hover: rgba(0,0,0,.02);
+  --line: rgba(0,0,0,.08); --line-strong: rgba(0,0,0,.14); --highlight: rgba(255,255,255,.8);
+  --fg: #1b1c1f; --fg-2: #3c3f45; --fg-3: #6b6f76; --fg-4: #94979d;
+  --accent: #5e6ad2; --glow: rgba(94,106,210,.12);
+  --z0: #d64545; --z1: #db7f2c; --z2: #94979d; --z3: #3fa877; --z4: #2b8a5c;
+  color-scheme: light;
 }
-body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); padding: 0 16px; margin: 0; }
-main { max-width: 720px; margin: 0 auto; padding-block: 40px 56px; display: grid; gap: 32px; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-h1 { font: 700 clamp(28px, 6vw, 40px)/1.1 var(--display); margin: 8px 0 0; text-wrap: balance; }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; }
-@media (max-width: 560px) { .hero { grid-template-columns: 1fr; } }
-svg { width: 100%; max-width: 360px; display: block; }
-.z { fill: none; stroke-width: 18; }
-.z0 { stroke: var(--z0); } .z1 { stroke: var(--z1); } .z2 { stroke: var(--z2); } .z3 { stroke: var(--z3); } .z4 { stroke: var(--z4); }
-.needle { stroke: var(--fg); stroke-width: 3.5; stroke-linecap: round; }
-.hub { fill: var(--accent); }
-.tick { fill: var(--muted); font: 500 10px var(--mono); }
-.score { font: 700 64px/1 var(--display); font-variant-numeric: tabular-nums; }
-.score small { font-size: 20px; color: var(--muted); font-weight: 500; }
-.pill { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 999px; font: 500 14px var(--body); color: #fff; }
-.strong-sell { background: var(--z0); } .sell { background: var(--z1); } .neutral { background: var(--z2); }
-.buy { background: var(--z3); } .strong-buy { background: var(--z4); }
-.meta { margin-top: 14px; color: var(--muted); font: 13px var(--mono); }
-.ledger { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; min-width: 520px; }
-th { text-align: left; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 12px 16px; border-bottom: 1px solid var(--line); }
-td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-tr:last-child td { border-bottom: 0; }
-td:first-child { font-weight: 500; white-space: nowrap; }
-.w { margin-left: 8px; font: 12px var(--mono); color: var(--muted); }
-.read { color: var(--muted); font-size: 13px; }
-td:last-child { white-space: nowrap; }
-.bar { display: inline-block; vertical-align: middle; position: relative; width: 84px; height: 8px; background: var(--line); border-radius: 4px; }
-.bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
-.bar span { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
-.bar .pos { background: var(--z3); } .bar .neg { background: var(--z1); }
-.sv { margin-left: 10px; font: 13px var(--mono); font-variant-numeric: tabular-nums; }
-.notes { color: var(--muted); font-size: 13px; max-width: 62ch; display: grid; gap: 6px; }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 16px; color: var(--fg); font: 400 14px/1.6 var(--sans);
+  background: radial-gradient(ellipse 80% 420px at 50% -80px, var(--glow), transparent 70%) no-repeat, var(--bg);
+  -webkit-font-smoothing: antialiased; font-feature-settings: "cv01", "ss03";
+}
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 20px 64px; display: grid; gap: 28px; }
+
+nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 590; font-size: 14px; letter-spacing: -.01em; }
+.mark { width: 24px; height: 24px; display: block; flex: none; border-radius: 6px; box-shadow: 0 0 0 1px var(--line-strong); }
+.live { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--fg-3); font-size: 12px; background: var(--surface); }
+.live i { width: 6px; height: 6px; border-radius: 50%; background: var(--z4); box-shadow: 0 0 0 3px color-mix(in srgb, var(--z4) 25%, transparent); }
+
+header h1 { margin: 0; font-weight: 590; font-size: clamp(32px, 6vw, 48px); line-height: 1.05; letter-spacing: -.035em; text-wrap: balance;
+  background: linear-gradient(180deg, var(--fg) 30%, color-mix(in srgb, var(--fg) 55%, transparent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+header p { margin: 10px 0 0; color: var(--fg-3); font-size: 15px; max-width: 56ch; }
+
+.card { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 14px; box-shadow: inset 0 1px 0 var(--highlight), 0 24px 48px -24px rgba(0,0,0,.45); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 8px 32px; align-items: center; padding: 28px 32px; }
+@media (max-width: 640px) { .hero { grid-template-columns: 1fr; padding: 20px; } }
+.hero svg { width: 100%; max-width: 380px; display: block; margin: 0 auto; overflow: visible; }
+.track { fill: none; stroke: var(--line); stroke-width: 14; stroke-linecap: round; }
+.arc { fill: none; stroke: url(#grad); stroke-width: 6; stroke-linecap: round; }
+.tick-mark { stroke: var(--fg-4); stroke-width: 1; }
+.needle { stroke: var(--fg-2); stroke-width: 2; stroke-linecap: round; }
+.hub { fill: var(--surface-2); stroke: var(--line-strong); stroke-width: 1.5; }
+.marker { fill: var(--fg); stroke: var(--bg); stroke-width: 3; filter: drop-shadow(0 0 6px var(--accent)); }
+.end { fill: var(--fg-4); font: 500 9px var(--mono); letter-spacing: .08em; }
+
+.label { color: var(--fg-3); font-size: 12px; font-weight: 510; letter-spacing: .02em; }
+.score { font-weight: 600; font-size: 88px; line-height: 1; letter-spacing: -.05em; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.score small { font-size: 22px; font-weight: 500; letter-spacing: -.01em; color: var(--fg-4); margin-left: 4px; }
+.status { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 5px 10px 5px 9px; border: 1px solid var(--line-strong); border-radius: 6px; font-size: 13px; font-weight: 510; color: var(--fg-2); background: var(--hover); }
+.status i { width: 8px; height: 8px; border-radius: 50%; }
+.strong-sell i { background: var(--z0); } .sell i { background: var(--z1); } .neutral i { background: var(--z2); }
+.buy i { background: var(--z3); } .strong-buy i { background: var(--z4); }
+.facts { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.facts div { display: grid; gap: 2px; }
+.facts b { font: 500 15px var(--sans); letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--fg); }
+
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 0 4px 10px; }
+.section-head h2 { margin: 0; font-size: 14px; font-weight: 590; letter-spacing: -.01em; }
+.section-head span { color: var(--fg-4); font: 12px var(--mono); }
+.list { overflow: hidden; }
+.row { display: grid; grid-template-columns: minmax(170px, 220px) minmax(0, 1fr) 150px; gap: 16px; align-items: center; padding: 13px 20px; border-top: 1px solid var(--line); transition: background .15s; }
+.row:first-child { border-top: 0; }
+.row:hover { background: var(--hover); }
+.name { font-weight: 510; color: var(--fg); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.chip { font: 500 11px var(--mono); color: var(--fg-3); padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; }
+.read { color: var(--fg-3); font-size: 13px; min-width: 0; }
+.sig { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.bar { position: relative; width: 80px; height: 4px; border-radius: 2px; background: var(--line); }
+.bar::after { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px; background: var(--line-strong); }
+.bar span { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
+.bar .pos { background: var(--z4); } .bar .neg { background: var(--z0); }
+.sv { font: 500 12px var(--mono); font-variant-numeric: tabular-nums; width: 42px; text-align: right; }
+.sv.pos { color: var(--z4); } .sv.neg { color: var(--z0); }
+@media (max-width: 640px) {
+  .row { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 16px; }
+  .read { grid-column: 1 / -1; grid-row: 2; }
+}
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 28px; color: var(--fg-3); font-size: 13px; padding: 0 4px; }
+.notes h3 { margin: 0 0 4px; font-size: 12px; font-weight: 510; color: var(--fg-2); }
 .notes p { margin: 0; }
+footer { color: var(--fg-4); font-size: 12px; padding: 20px 4px 0; border-top: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { .row { transition: none; } }
 </style>
 
-<main>
+<div class="wrap">
+  <nav>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+      <defs><linearGradient id="pill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb347"/><stop offset="1" stop-color="#f7931a"/></linearGradient></defs>
+      <rect width="24" height="24" rx="6" fill="#000"/>
+      <g transform="rotate(-45 12 12)">
+        <rect x="4" y="8.5" width="16" height="7" rx="3.5" fill="url(#pill)"/>
+        <rect x="12" y="8.5" width="8" height="7" rx="3.5" fill="#d9760a"/>
+        <rect x="12" y="8.5" width="3" height="7" fill="#d9760a"/>
+        <rect x="6.5" y="9.6" width="4.5" height="1.3" rx=".65" fill="#fff" opacity=".55"/>
+      </g>
+    </svg>Bitcoin Cycle Score</div>
+    <span class="live"><i></i>Updates daily · 00:15 UTC</span>
+  </nav>
+
   <header>
-    <div class="eyebrow">BTC / USD · long-term horizon · updates daily</div>
-    <h1>Bitcoin Cycle Score</h1>
+    <h1>Where Bitcoin sits in its cycle</h1>
+    <p>Seven on-chain, valuation and momentum indicators combined into one long-term buy/sell score.</p>
   </header>
 
-  <section class="hero">
-    <svg viewBox="0 0 240 150" role="img" aria-label="Gauge at $score of 100, $zone">
+  <section class="card hero">
+    <svg viewBox="0 0 240 140" role="img" aria-label="Gauge at $score of 100, $zone">
+      <defs>
+        <linearGradient id="grad" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="220" y2="0">
+          <stop offset="0" style="stop-color: var(--z0)"/>
+          <stop offset=".3" style="stop-color: var(--z1)"/>
+          <stop offset=".5" style="stop-color: var(--z2)"/>
+          <stop offset=".7" style="stop-color: var(--z3)"/>
+          <stop offset="1" style="stop-color: var(--z4)"/>
+        </linearGradient>
+      </defs>
       $zones
       $needle
-      <circle cx="120" cy="120" r="7" class="hub"/>
-      <text x="20" y="142" class="tick" text-anchor="middle">SELL</text>
-      <text x="220" y="142" class="tick" text-anchor="middle">BUY</text>
+      <circle cx="120" cy="120" r="6" class="hub"/>
+      <text x="20" y="138" class="end" text-anchor="middle">SELL</text>
+      <text x="220" y="138" class="end" text-anchor="middle">BUY</text>
     </svg>
     <div>
-      <div class="score">$score<small> / 100</small></div>
-      <span class="pill $zcls">$zone</span>
-      <div class="meta">Price $price · daily close $asof</div>
+      <div class="label">Cycle score</div>
+      <div class="score">$score<small>/100</small></div>
+      <span class="status $zcls"><i></i>$zone</span>
+      <div class="facts">
+        <div><span class="label">BTC price</span><b>$price</b></div>
+        <div><span class="label">Daily close</span><b>$asof</b></div>
+        <div><span class="label">Horizon</span><b>Months to years</b></div>
+      </div>
     </div>
   </section>
 
-  <div class="ledger">
-    <table>
-      <thead><tr><th>Indicator · weight</th><th>Reading</th><th>Signal (−1 sell, +1 buy)</th></tr></thead>
-      <tbody>$rows</tbody>
-    </table>
-  </div>
+  <section>
+    <div class="section-head"><h2>Signals</h2><span>−1 sell · +1 buy</span></div>
+    <div class="card list">$rows</div>
+  </section>
 
-  <div class="notes">
-    <p>Each indicator gives a signal from −1 to +1. The weighted average maps to 0–100: under 20 strong sell, 20–40 sell, 40–60 neutral, 60–80 buy, over 80 strong buy.</p>
-    <p>Valuation and cycle indicators (rainbow, Puell, halving cycle) carry 55% of the weight. RSI, VWAP and price-to-200-day are read contrarian. Moving-average crosses and MACD follow the trend.</p>
-    <p>Data: Binance daily candles, CoinMetrics community price and miner issuance. Recomputed after each daily close (00:15 UTC). Not financial advice.</p>
-  </div>
-</main>
+  <section class="notes">
+    <div><h3>How the score works</h3><p>Each indicator gives a signal from −1 to +1. The weighted average maps to 0–100: under 20 strong sell, 20–40 sell, 40–60 neutral, 60–80 buy, over 80 strong buy.</p></div>
+    <div><h3>What drives it</h3><p>Rainbow, Puell and the halving cycle carry 55% of the weight. RSI, VWAP and price-to-200-day are read contrarian; moving-average crosses and MACD follow the trend.</p></div>
+  </section>
+
+  <footer>Data from Binance daily candles and CoinMetrics community price and miner issuance. Not financial advice.</footer>
+</div>

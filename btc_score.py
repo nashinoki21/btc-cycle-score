@@ -170,15 +170,23 @@ def arc(a, b, r=100, cx=120, cy=120):
 
 
 def render(price, score, rows, asof):
-    zones = "".join(
-        f'<path d="{arc(lo + 0.8, hi - 0.8)}" class="z z{i}"/>'
-        for i, (lo, hi) in enumerate([(0, 20), (20, 40), (40, 60), (60, 80), (80, 100)]))
-    t = math.pi * (1 - score / 100)
-    needle = f'<line x1="120" y1="120" x2="{120 + 78 * math.cos(t):.2f}" y2="{120 - 78 * math.sin(t):.2f}" class="needle"/>'
+    def polar(v, r):
+        t = math.pi * (1 - v / 100)
+        return 120 + r * math.cos(t), 120 - r * math.sin(t)
+
+    ticks = "".join(
+        '<line x1="{:.2f}" y1="{:.2f}" x2="{:.2f}" y2="{:.2f}" class="tick-mark"/>'.format(*polar(v, 110), *polar(v, 114))
+        for v in range(0, 101, 10))
+    zones = f'<path d="{arc(0, 100)}" class="track"/><path d="{arc(0, 100)}" class="arc"/>{ticks}'
+    nx, ny = polar(score, 72)
+    mx, my = polar(score, 100)
+    needle = (f'<line x1="120" y1="120" x2="{nx:.2f}" y2="{ny:.2f}" class="needle"/>'
+              f'<circle cx="{mx:.2f}" cy="{my:.2f}" r="6" class="marker"/>')
     trs = "".join(
-        f'<tr><td>{name}<span class="w">{WEIGHTS[k]}%</span></td><td class="read">{reading}</td>'
-        f'<td><div class="bar"><span style="{"left:50%;width" if s >= 0 else f"left:{50 + s * 50:.1f}%;width"}:{abs(s) * 50:.1f}%" class="{"pos" if s >= 0 else "neg"}"></span></div>'
-        f'<span class="sv">{s:+.2f}</span></td></tr>'
+        f'<div class="row"><div class="name">{name}<span class="chip">{WEIGHTS[k]}%</span></div>'
+        f'<div class="read">{reading}</div>'
+        f'<div class="sig"><div class="bar"><span style="{"left:50%;width" if s >= 0 else f"left:{50 + s * 50:.1f}%;width"}:{abs(s) * 50:.1f}%" class="{"pos" if s >= 0 else "neg"}"></span></div>'
+        f'<span class="sv {"pos" if s >= 0 else "neg"}">{s:+.2f}</span></div></div>'
         for k, (name, reading, s) in rows.items())
     tpl = Template((Path(__file__).parent / "gauge_template.html").read_text())
     return tpl.substitute(zones=zones, needle=needle, score=f"{score:.0f}", zone=zone(score),
