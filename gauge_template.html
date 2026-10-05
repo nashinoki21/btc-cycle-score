@@ -65,8 +65,8 @@ header p { margin: 0; color: var(--fg-3); font-size: 16px; max-width: 52ch; text
 .score { font-weight: 600; font-size: clamp(64px, 17vw, 104px); line-height: .9; letter-spacing: -.055em; font-variant-numeric: tabular-nums;
   background: linear-gradient(180deg, var(--fg), color-mix(in srgb, var(--fg) 70%, transparent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .score small { font-size: .24em; font-weight: 500; letter-spacing: -.01em; color: var(--fg-4); -webkit-text-fill-color: var(--fg-4); margin-left: 4px; }
-.status { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 10px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 13px; font-weight: 510; color: var(--fg); background: rgba(8,9,10,.6); backdrop-filter: blur(6px); }
-.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--zone); box-shadow: 0 0 0 3px color-mix(in srgb, var(--zone) 25%, transparent); }
+.status { display: inline-flex; align-items: center; padding: 4px 12px; border: 1px solid color-mix(in srgb, var(--zone) 40%, transparent); border-radius: 999px; font-size: 13px; font-weight: 590; letter-spacing: .01em;
+  color: color-mix(in srgb, var(--zone) 55%, #fff); background: color-mix(in srgb, var(--zone) 16%, rgba(8,9,10,.85)); backdrop-filter: blur(6px); }
 .drivers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 620px; margin: 28px auto 0; text-align: left; }
 .drv { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.015); }
 .drv .label { display: flex; align-items: center; gap: 6px; }
@@ -220,7 +220,7 @@ dialog p { margin: 0; color: var(--fg-3); }
       </svg>
       <div class="readout">
         <div class="score">$score<small>/100</small></div>
-        <span class="status"><i></i>$zone</span>
+        <span class="status">$zone</span>
       </div>
     </div>
     <div class="drivers">$drivers</div>
