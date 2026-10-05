@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: dark-first product surface. Glow-lit header, one hero card (gauge + verdict), signal list, footnotes. */
+/* Layout: dark-only product surface. Glow-lit header, one hero card (gauge + verdict), signal list, footnotes. */
 :root {
   --bg: #08090a; --surface: #0f1011; --surface-2: #141516; --hover: rgba(255,255,255,.025);
   --line: rgba(255,255,255,.08); --line-strong: rgba(255,255,255,.14); --highlight: rgba(255,255,255,.06);
@@ -14,23 +14,6 @@
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   color-scheme: dark;
 }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
-  --bg: #fcfcfd; --surface: #ffffff; --surface-2: #f7f8f8; --hover: rgba(0,0,0,.02);
-  --line: rgba(0,0,0,.08); --line-strong: rgba(0,0,0,.14); --highlight: rgba(255,255,255,.8);
-  --fg: #1b1c1f; --fg-2: #3c3f45; --fg-3: #6b6f76; --fg-4: #94979d;
-  --accent: #5e6ad2; --glow: rgba(94,106,210,.12);
-  --z0: #d64545; --z1: #db7f2c; --z2: #94979d; --z3: #3fa877; --z4: #2b8a5c;
-  color-scheme: light;
-} }
-:root[data-theme="light"] {
-  --bg: #fcfcfd; --surface: #ffffff; --surface-2: #f7f8f8; --hover: rgba(0,0,0,.02);
-  --line: rgba(0,0,0,.08); --line-strong: rgba(0,0,0,.14); --highlight: rgba(255,255,255,.8);
-  --fg: #1b1c1f; --fg-2: #3c3f45; --fg-3: #6b6f76; --fg-4: #94979d;
-  --accent: #5e6ad2; --glow: rgba(94,106,210,.12);
-  --z0: #d64545; --z1: #db7f2c; --z2: #94979d; --z3: #3fa877; --z4: #2b8a5c;
-  color-scheme: light;
-}
-
 * { box-sizing: border-box; }
 body {
   margin: 0; padding: 0 16px; color: var(--fg); font: 400 14px/1.6 var(--sans);
