@@ -76,6 +76,11 @@ header p { margin: 0; color: var(--fg-3); font-size: 16px; max-width: 52ch; text
 .facts div { display: grid; gap: 2px; padding: 16px 20px; text-align: left; }
 .facts div + div { border-left: 1px solid var(--line); }
 .facts b { font: 500 15px var(--sans); letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--fg); }
+.px-live { color: var(--z4); }
+.chg { margin-left: 8px; font: 500 12px var(--mono); }
+.chg.up { color: var(--z4); } .chg.down { color: var(--z0); }
+#px { transition: color .6s; }
+#px.flash { color: var(--accent); transition: none; }
 .label { color: var(--fg-3); font-size: 12px; font-weight: 510; letter-spacing: .01em; }
 @media (max-width: 640px) {
   .hero { padding: 28px 16px 0; }
@@ -199,7 +204,7 @@ dialog p { margin: 0; color: var(--fg-3); }
     </div>
     <div class="drivers">$drivers</div>
     <div class="facts">
-      <div><span class="label">BTC price</span><b>$price</b></div>
+      <div><span class="label">BTC price<span class="px-live" id="px-live" hidden> · Live</span></span><b><span id="px">$price</span><span class="chg" id="px-chg"></span></b></div>
       <div><span class="label">Daily close</span><b>$asof</b></div>
       <div><span class="label">Horizon</span><b>Months to years</b></div>
     </div>
@@ -303,5 +308,41 @@ dialog p { margin: 0; color: var(--fg-3); }
         say("Couldn't reach the mailing list. Check your connection and try again.", "err");
       });
   });
+})();
+
+// Live BTC price from CoinGecko; the score itself stays on the daily close.
+(function () {
+  var px = document.getElementById("px");
+  var chg = document.getElementById("px-chg");
+  var tag = document.getElementById("px-live");
+  var usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+  function load() {
+    if (document.hidden) return;
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true")
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) {
+        var b = d.bitcoin;
+        if (!b || typeof b.usd !== "number") return;
+        var text = usd.format(b.usd);
+        if (px.textContent !== text) {
+          px.textContent = text;
+          px.classList.add("flash");
+          requestAnimationFrame(function () { requestAnimationFrame(function () { px.classList.remove("flash"); }); });
+        }
+        var c = b.usd_24h_change;
+        if (typeof c === "number") {
+          chg.textContent = (c >= 0 ? "+" : "") + c.toFixed(2) + "%";
+          chg.className = "chg " + (c >= 0 ? "up" : "down");
+          chg.title = "24h change";
+        }
+        tag.hidden = false;
+      })
+      .catch(function () { /* keep the last price shown */ });
+  }
+
+  load();
+  setInterval(load, 60000);
+  document.addEventListener("visibilitychange", load);
 })();
 </script>
