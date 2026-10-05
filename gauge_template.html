@@ -1,0 +1,95 @@
+<title>Bitcoin Cycle Score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column. Gauge and verdict up top, indicator ledger below. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --fg: #15181e; --muted: #5d6573; --line: #dde1e7;
+  --accent: #e8850c;
+  --z0: #c8372d; --z1: #e07a4f; --z2: #a3a9b4; --z3: #3f9d8a; --z4: #1f7a4d;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1216; --surface: #171b21; --fg: #e9ecf1; --muted: #98a1ae; --line: #2a3039;
+  --accent: #f59a2a;
+  --z0: #e5574c; --z1: #ec9168; --z2: #6b7380; --z3: #4fb8a2; --z4: #3ea66f;
+  color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0f1216; --surface: #171b21; --fg: #e9ecf1; --muted: #98a1ae; --line: #2a3039;
+  --accent: #f59a2a;
+  --z0: #e5574c; --z1: #ec9168; --z2: #6b7380; --z3: #4fb8a2; --z4: #3ea66f;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); padding: 0 16px; margin: 0; }
+main { max-width: 720px; margin: 0 auto; padding-block: 40px 56px; display: grid; gap: 32px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 700 clamp(28px, 6vw, 40px)/1.1 var(--display); margin: 8px 0 0; text-wrap: balance; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+@media (max-width: 560px) { .hero { grid-template-columns: 1fr; } }
+svg { width: 100%; max-width: 360px; display: block; }
+.z { fill: none; stroke-width: 18; }
+.z0 { stroke: var(--z0); } .z1 { stroke: var(--z1); } .z2 { stroke: var(--z2); } .z3 { stroke: var(--z3); } .z4 { stroke: var(--z4); }
+.needle { stroke: var(--fg); stroke-width: 3.5; stroke-linecap: round; }
+.hub { fill: var(--accent); }
+.tick { fill: var(--muted); font: 500 10px var(--mono); }
+.score { font: 700 64px/1 var(--display); font-variant-numeric: tabular-nums; }
+.score small { font-size: 20px; color: var(--muted); font-weight: 500; }
+.pill { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 999px; font: 500 14px var(--body); color: #fff; }
+.strong-sell { background: var(--z0); } .sell { background: var(--z1); } .neutral { background: var(--z2); }
+.buy { background: var(--z3); } .strong-buy { background: var(--z4); }
+.meta { margin-top: 14px; color: var(--muted); font: 13px var(--mono); }
+.ledger { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 520px; }
+th { text-align: left; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 12px 16px; border-bottom: 1px solid var(--line); }
+td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+.w { margin-left: 8px; font: 12px var(--mono); color: var(--muted); }
+.read { color: var(--muted); font-size: 13px; }
+td:last-child { white-space: nowrap; }
+.bar { display: inline-block; vertical-align: middle; position: relative; width: 84px; height: 8px; background: var(--line); border-radius: 4px; }
+.bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.bar span { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+.bar .pos { background: var(--z3); } .bar .neg { background: var(--z1); }
+.sv { margin-left: 10px; font: 13px var(--mono); font-variant-numeric: tabular-nums; }
+.notes { color: var(--muted); font-size: 13px; max-width: 62ch; display: grid; gap: 6px; }
+.notes p { margin: 0; }
+</style>
+
+<main>
+  <header>
+    <div class="eyebrow">BTC / USD · long-term horizon · updates daily</div>
+    <h1>Bitcoin Cycle Score</h1>
+  </header>
+
+  <section class="hero">
+    <svg viewBox="0 0 240 150" role="img" aria-label="Gauge at $score of 100, $zone">
+      $zones
+      $needle
+      <circle cx="120" cy="120" r="7" class="hub"/>
+      <text x="20" y="142" class="tick" text-anchor="middle">SELL</text>
+      <text x="220" y="142" class="tick" text-anchor="middle">BUY</text>
+    </svg>
+    <div>
+      <div class="score">$score<small> / 100</small></div>
+      <span class="pill $zcls">$zone</span>
+      <div class="meta">Price $price · daily close $asof</div>
+    </div>
+  </section>
+
+  <div class="ledger">
+    <table>
+      <thead><tr><th>Indicator · weight</th><th>Reading</th><th>Signal (−1 sell, +1 buy)</th></tr></thead>
+      <tbody>$rows</tbody>
+    </table>
+  </div>
+
+  <div class="notes">
+    <p>Each indicator gives a signal from −1 to +1. The weighted average maps to 0–100: under 20 strong sell, 20–40 sell, 40–60 neutral, 60–80 buy, over 80 strong buy.</p>
+    <p>Valuation and cycle indicators (rainbow, Puell, halving cycle) carry 55% of the weight. RSI, VWAP and price-to-200-day are read contrarian. Moving-average crosses and MACD follow the trend.</p>
+    <p>Data: Binance daily candles, CoinMetrics community price and miner issuance. Recomputed after each daily close (00:15 UTC). Not financial advice.</p>
+  </div>
+</main>
