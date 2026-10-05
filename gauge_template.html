@@ -80,7 +80,10 @@ header p { margin: 10px 0 0; color: var(--fg-3); font-size: 15px; max-width: 56c
 .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 28px; color: var(--fg-3); font-size: 13px; padding: 0 4px; }
 .notes h3 { margin: 0 0 4px; font-size: 12px; font-weight: 510; color: var(--fg-2); }
 .notes p { margin: 0; }
-footer { color: var(--fg-4); font-size: 12px; padding: 20px 4px 0; border-top: 1px solid var(--line); }
+footer { color: var(--fg-4); font-size: 12px; padding: 20px 4px 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+footer a { color: var(--fg-2); text-decoration: none; border-bottom: 1px solid var(--line-strong); transition: color .15s, border-color .15s; }
+footer a:hover, footer a:focus-visible { color: var(--fg); border-color: var(--fg-3); }
+footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 @media (prefers-reduced-motion: reduce) { .row { transition: none; } }
 </style>
 
@@ -143,5 +146,8 @@ footer { color: var(--fg-4); font-size: 12px; padding: 20px 4px 0; border-top: 1
     <div><h3>What drives it</h3><p>Rainbow, Puell and the halving cycle carry 55% of the weight. RSI, VWAP and price-to-200-day are read contrarian; moving-average crosses and MACD follow the trend.</p></div>
   </section>
 
-  <footer>Data from Binance daily candles and CoinMetrics community price and miner issuance. Not financial advice.</footer>
+  <footer>
+    <span>Data from Binance daily candles and CoinMetrics community price and miner issuance. Not financial advice.</span>
+    <span>Made by <a href="https://www.alanpereira.co/" target="_blank" rel="noopener">Alan Pereira</a></span>
+  </footer>
 </div>
