@@ -126,6 +126,28 @@ header p { margin: 0; color: var(--fg-3); font-size: 16px; max-width: 52ch; text
   .read { grid-column: 1 / -1; grid-row: 2; }
 }
 
+/* Stacker promo */
+.promo { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: center; padding: 28px 0 28px 28px; }
+.promo::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 85% 40%, rgba(247,147,26,.14), transparent 55%); }
+.promo-copy { display: grid; gap: 14px; justify-items: start; }
+.app { display: flex; align-items: center; gap: 14px; }
+.app img { width: 56px; height: 56px; border-radius: 13px; box-shadow: 0 8px 24px -8px rgba(247,147,26,.45); }
+.app h2 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 590; letter-spacing: -.02em; }
+.app p { margin: 0; color: var(--fg-3); font-size: 13px; }
+.promo-desc { margin: 0; color: var(--fg-2); font-size: 14px; max-width: 42ch; }
+.feats { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.feats li { padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: var(--fg-3); background: var(--hover); }
+.cta { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; margin-top: 4px; }
+.cta svg { width: 14px; height: 14px; }
+.promo-shot { display: block; margin-right: -12%; border-radius: 12px 0 0 12px; overflow: hidden; border: 1px solid var(--line-strong); border-right: 0; box-shadow: 0 30px 60px -20px rgba(0,0,0,.8); transition: transform .3s cubic-bezier(.16,1,.3,1); }
+.promo-shot img { display: block; width: 100%; height: auto; }
+.promo:hover .promo-shot { transform: translateX(-6px); }
+@media (max-width: 640px) {
+  .promo { grid-template-columns: 1fr; padding: 20px 0 0 20px; gap: 20px; }
+  .promo-copy { padding-right: 20px; }
+  .promo-shot { margin-right: 0; }
+}
+
 /* Footer */
 footer { color: var(--fg-4); font-size: 12px; padding: 20px 4px 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
 .foot-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; }
@@ -162,7 +184,7 @@ dialog p { margin: 0; color: var(--fg-3); }
 
 @media (prefers-reduced-motion: reduce) {
   .needle-g, .live i { animation: none; }
-  .row, .chev, .panel summary, .panel::details-content { transition: none; }
+  .row, .chev, .panel summary, .panel::details-content, .promo-shot { transition: none; }
 }
 </style>
 
@@ -218,6 +240,28 @@ dialog p { margin: 0; color: var(--fg-3); }
     </summary>
     <div class="list">$rows</div>
   </details>
+
+  <section class="card promo" aria-labelledby="promo-title">
+    <div class="promo-copy">
+      <span class="label">From the maker</span>
+      <div class="app">
+        <img src="https://img.glaze.app/tNyXg3-ldNvPZx3ss-kAFUh7583yXzXnJ5BBYgexqpc/rs:fit:384:384/aHR0cHM6Ly9hcGkuZ2xhemVhcHAuY29tL3N0b3JhZ2UvdjEvb2JqZWN0L3B1YmxpYy9nbGF6ZS1wdWJsaWMtYXNzZXRzL2ljb25zLzhkNzI2MGI1LWExNDgtNDExNy05ZDEzLTI2ZGQ2NWU5NTRlMS1pY29uLTUxMi5wbmc" alt="" width="56" height="56" loading="lazy">
+        <div><h2 id="promo-title">Stacker <span class="chip">macOS</span></h2><p>Track Bitcoin savings and goals</p></div>
+      </div>
+      <p class="promo-desc">A Mac app for long-term savers. Log your Bitcoin, set savings goals and watch your stack grow over time.</p>
+      <ul class="feats">
+        <li>Savings growth charts</li>
+        <li>Goal tracking</li>
+        <li>Your preferred currency</li>
+      </ul>
+      <a class="btn-primary cta" href="https://www.glaze.app/app/stacker-pKQcRi" target="_blank" rel="noopener">Get Stacker for Mac
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>
+      </a>
+    </div>
+    <a class="promo-shot" href="https://www.glaze.app/app/stacker-pKQcRi" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <img src="https://img.glaze.app/D9lLxUvKmOA7tg3X-F2CMzWlh022-9tfcCAwSx1DMo4/rs:fit:0:0/aHR0cHM6Ly9hcGkuZ2xhemVhcHAuY29tL3N0b3JhZ2UvdjEvb2JqZWN0L3B1YmxpYy9nbGF6ZS1wdWJsaWMtYXNzZXRzL3NjcmVlbnNob3RzL204aTM3NGVyLzVkYmI1MmQ2LTlhMjctNGFkNC04NGE0LWFiNWQ5NzQ5MWJjOF9jMmE1NzExZC03ZjJlLTQwM2EtYmRkMy05MDJhMGI1OTlhZjMucG5n.webp" alt="" width="3200" height="1800" loading="lazy" decoding="async">
+    </a>
+  </section>
 
   <footer>
     <span class="foot-links"><button class="link-btn" id="open-how" type="button" aria-haspopup="dialog">How it works</button><span>Data from Binance daily candles and CoinMetrics community price and miner issuance. Not financial advice.</span></span>
