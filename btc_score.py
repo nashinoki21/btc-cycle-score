@@ -178,10 +178,16 @@ def render(price, score, rows, asof):
         '<line x1="{:.2f}" y1="{:.2f}" x2="{:.2f}" y2="{:.2f}" class="tick-mark"/>'.format(*polar(v, 110), *polar(v, 114))
         for v in range(0, 101, 10))
     zones = f'<path d="{arc(0, 100)}" class="track"/><path d="{arc(0, 100)}" class="arc"/>{ticks}'
-    nx, ny = polar(score, 72)
-    mx, my = polar(score, 100)
-    needle = (f'<line x1="120" y1="120" x2="{nx:.2f}" y2="{ny:.2f}" class="needle"/>'
-              f'<circle cx="{mx:.2f}" cy="{my:.2f}" r="6" class="marker"/>')
+    # Marker drawn at 50 (top of the arc) and rotated by CSS so it can sweep in on load.
+    needle = f'<g class="needle-g" style="--rot:{(score - 50) * 1.8:.1f}deg"><circle cx="120" cy="20" r="6" class="marker"/></g>'
+    pull = sorted(rows, key=lambda k: WEIGHTS[k] * rows[k][2])
+    bears = [rows[k][0] for k in pull[:2] if rows[k][2] <= -0.25]
+    bulls = [rows[k][0] for k in reversed(pull[-2:]) if rows[k][2] >= 0.25]
+    drivers = (f'<div class="drv up"><span class="label">Pulling toward buy</span><b>{", ".join(bulls) or "Nothing strong"}</b></div>'
+               f'<div class="drv down"><span class="label">Pulling toward sell</span><b>{", ".join(bears) or "Nothing strong"}</b></div>')
+    dots = "".join(
+        f'<i class="d {"pos" if s >= 0.25 else "neg" if s <= -0.25 else "flat"}" title="{name} {s:+.2f}"></i>'
+        for name, _, s in rows.values())
     trs = "".join(
         f'<div class="row"><div class="name">{name}<span class="chip">{WEIGHTS[k]}%</span></div>'
         f'<div class="read">{reading}</div>'
@@ -191,7 +197,7 @@ def render(price, score, rows, asof):
     tpl = Template((Path(__file__).parent / "gauge_template.html").read_text())
     return tpl.substitute(zones=zones, needle=needle, score=f"{score:.0f}", zone=zone(score),
                           zcls=zone(score).lower().replace(" ", "-"), price=f"${price:,.0f}",
-                          asof=asof, rows=trs)
+                          asof=asof, rows=trs, drivers=drivers, dots=dots, count=len(rows))
 
 
 def page():
